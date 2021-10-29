@@ -1,0 +1,12 @@
+---
+- name: Configure webserver with nginx and tls
+  hosts: dev
+  become: True
+  vars:
+    key_file: /etc/nginx/ssl/nginx.key
+    cert_file: /etc/nginx/ssl/nginx.crt
+    conf_file: /etc/nginx/sites-available/default
+    server_name: localhost
+  roles: 
+    - role: web
+    - role: geerlingguy.redis

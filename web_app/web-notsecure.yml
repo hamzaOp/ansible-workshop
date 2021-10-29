@@ -1,0 +1,30 @@
+---
+- name: Configure webserver with nginx
+  hosts: dev
+  become: True
+  gather_facts: True
+  vars:
+    key_file: /etc/nginx/ssl/nginx.key
+    cert_file: /etc/nginx/ssl/nginx.crt
+    config_file: /etc/nginx/sites-available/default
+  tasks:
+    - name: debug
+      debug: var=ansible_distribution
+    - name: install nginx
+      apt: name=nginx update_cache=yes
+    - name: tls directories
+      file: path=/etc/nginx/ssl state=directory
+    - name: tls key
+      copy: src=files/nginx.key dest={{ key_file }} owner=root mode=600
+      notify: restart nginx
+    - name: copy certificate
+      copy: src=files/nginx.crt dest={{ cert_file }}  
+    - name: copy nginx config file
+      copy: src=files/nginx.conf dest={{ config_file }}
+    - name: copy index.html
+      template: src=templates/index.html.j2 dest=/usr/share/nginx/html/index.html mode=644
+    - name: restart nginx
+      service: name=nginx state=restarted
+  handlers:
+    - name: restart nginx
+      service: name=nginx state=restarted

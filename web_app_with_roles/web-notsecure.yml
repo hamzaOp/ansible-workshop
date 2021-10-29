@@ -1,0 +1,12 @@
+---
+- name: Configure webserver with nginx
+  hosts: dev
+  become: True
+  gather_facts: True
+  vars:
+    key_file: /etc/nginx/ssl/nginx.key
+    cert_file: /etc/nginx/ssl/nginx.crt
+    config_file: /etc/nginx/sites-available/default
+  roles: 
+    - role: web
+   
